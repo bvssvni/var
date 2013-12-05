@@ -9,7 +9,18 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_24
+#define EXAMPLE_25
+
+#ifdef EXAMPLE_25
+int main(int argc, char* argv[]) {
+    var_init();
+    var data = variable.PointerList(3, (var[]){
+        variable.String("Sven"), variable.String("Nilsen"), variable.Float64(29)
+    });
+    console.Log(data);
+    gc.Collect(variable.Null());
+}
+#endif
 
 #ifdef EXAMPLE_24
 int main(int argc, char* argv[]) {

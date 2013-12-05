@@ -13,6 +13,8 @@
 static struct var_ptr* s_last_pointer = NULL;
 static int s_marking = 0;
 
+void function_console_log(var a);
+
 struct var_ptr *function_new_pointer(var a) {
     struct var_ptr* p = malloc(sizeof(struct var_ptr));
     *p = (struct var_ptr){.marked = s_marking, .variable = a, .next = s_last_pointer};
@@ -93,10 +95,20 @@ struct var pointer(var obj) {
         .value = {.pointerValue = function_new_pointer(obj)}};
 }
 
-struct var tuple(var a, var b) {
-    var c = pointer(b);
-    function_stack_push(&c, pointer(a));
-    return c;
+struct var pointerList(int argc, var argv[]) {
+    if (argc <= 0) {
+        return null();
+    }
+    
+    var res = null();
+    var* it = &res;
+    for (int i = 0; i < argc; i++) {
+        it->next = function_new_pointer(pointer(argv[i]));
+        
+        it = &it->next->variable;
+    }
+    
+    return res.next->variable;
 }
 
 struct var function(var (*f)(var args)) {
@@ -188,6 +200,7 @@ struct var float64List(int argc, double argv[]) {
 
 void function_console_log(var msg)
 {
+    var* it = &msg;
     switch (msg.type) {
         case TYPE_NULL:
             printf("(null)\r\n");
@@ -220,14 +233,12 @@ void function_console_log(var msg)
             printf("%f\r\n", msg.value.doubleValue);
             break;
         case TYPE_POINTER:
-            while (msg.next != NULL) {
-                struct var_ptr* ptr = msg.value.pointerValue;
-                function_console_log(ptr->variable);
-                msg = msg.next->variable;
+            while (it != NULL) {
+                function_console_log(it->value.pointerValue->variable);
+                
+                it = it->next == NULL ? NULL : &it->next->variable;
             }
             
-            struct var_ptr* ptr = msg.value.pointerValue;
-            function_console_log(ptr->variable);
             break;
         default:
             printf("ERR (%s): Unsupported type %i\r\n", __FUNCTION__, msg.type);
@@ -760,7 +771,9 @@ void var_init(void) {
         .Int32List = int32List,
         .Char8 = char8,
         .String = string,
-        .Null = null
+        .Null = null,
+        .Pointer = pointer,
+        .PointerList = pointerList,
     };
     stack = (struct stack_class){
         .Push = function_stack_push,

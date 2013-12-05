@@ -41,6 +41,8 @@ struct variable_class {
     var (*Char8)(char c);
     var (*String)(char* str);
     var (*Null)(void);
+    var (*Pointer)(var a);
+    var (*PointerList)(int argc, var argv[]);
 } variable;
 struct stack_class {
     void (*Push)(var *a, var b);
