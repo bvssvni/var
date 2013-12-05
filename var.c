@@ -86,24 +86,24 @@ var function_stack_pop(var *a) {
     return res;
 }
 
-struct var null(void) {
+var function_variable_null(void) {
     return (struct var){.type = TYPE_NULL};
 }
 
-struct var pointer(var obj) {
+var function_variable_pointer(var obj) {
     return (struct var){.type = TYPE_POINTER,
         .value = {.pointerValue = function_new_pointer(obj)}};
 }
 
-struct var pointerList(int argc, var argv[]) {
+var function_variable_pointerList(int argc, var argv[]) {
     if (argc <= 0) {
-        return null();
+        return function_variable_null();
     }
     
-    var res = null();
+    var res = function_variable_null();
     var* it = &res;
     for (int i = 0; i < argc; i++) {
-        it->next = function_new_pointer(pointer(argv[i]));
+        it->next = function_new_pointer(function_variable_pointer(argv[i]));
         
         it = &it->next->variable;
     }
@@ -111,21 +111,21 @@ struct var pointerList(int argc, var argv[]) {
     return res.next->variable;
 }
 
-struct var keyValue(var key, var value) {
-    return pointerList(2, (var[]){key, value});
+var function_variable_keyValue(var key, var value) {
+    return function_variable_pointerList(2, (var[]){key, value});
 }
 
-struct var function(var (*f)(var args)) {
+var function_variable_function(var (*f)(var args)) {
     return (struct var){.type = TYPE_FUNCTION,
         .value = {.functionValue = f}};
 }
 
-struct var binaryFunction(var (*f)(var a, var b)) {
+var function_variable_binaryFunction(var (*f)(var a, var b)) {
     return (struct var){.type = TYPE_BINARY_FUNCTION,
         .value = {.binaryFunctionValue = f}};
 }
 
-struct var function_variable_call(var func, var args) {
+var function_variable_call(var func, var args) {
     if (func.type != TYPE_FUNCTION) {
         printf("ERR (%s): Not a function.\r\n", __FUNCTION__);
         exit(1);
@@ -134,7 +134,7 @@ struct var function_variable_call(var func, var args) {
     return func.value.functionValue(args);
 }
 
-struct var function_variable_callBinary(var func, var a, var b) {
+var function_variable_callBinary(var func, var a, var b) {
     if (func.type != TYPE_BINARY_FUNCTION) {
         printf("ERR (%s): Not a binary function.\r\n", __FUNCTION__);
         exit(1);
@@ -143,59 +143,59 @@ struct var function_variable_callBinary(var func, var a, var b) {
     return func.value.binaryFunctionValue(a, b);
 }
 
-struct var char8(char c) {
+var function_variable_char8(char c) {
     return (struct var){.type = TYPE_CHAR,
         .value = {.charValue = c}};
 }
 
-struct var string(char* txt) {
+var function_variable_string(char* txt) {
     int len = strlen(txt);
     if (len == 0) {
-        return null();
+        return function_variable_null();
     }
     
-    var ch = char8(txt[len - 1]);
+    var ch = function_variable_char8(txt[len - 1]);
     for (int i = len - 2; i >= 0; i--) {
-        function_stack_push(&ch, char8(txt[i]));
+        function_stack_push(&ch, function_variable_char8(txt[i]));
     }
     
-    return pointer(ch);
+    return function_variable_pointer(ch);
 }
 
-struct var int32(int val) {
+var function_variable_int32(int val) {
     return (struct var){.type = TYPE_INT,
         .value = {.intValue = val}};
 }
 
-struct var int32List(int argc, int argv[]) {
+var function_variable_int32List(int argc, int argv[]) {
     if (argc <= 0) {
-        return null();
+        return function_variable_null();
     }
     
-    var res = int32(argv[0]);
+    var res = function_variable_int32(argv[0]);
     var* it = &res;
     for (int i = 1; i < argc; i++) {
-        it->next = function_new_pointer(int32(argv[i]));
+        it->next = function_new_pointer(function_variable_int32(argv[i]));
         it = &it->next->variable;
     }
     
     return res;
 }
 
-struct var float64(double val) {
+var function_variable_float64(double val) {
     return (struct var){.type = TYPE_DOUBLE,
         .value = {.doubleValue = val}};
 }
 
-struct var float64List(int argc, double argv[]) {
+var function_variable_float64List(int argc, double argv[]) {
     if (argc <= 0) {
-        return null();
+        return function_variable_null();
     }
     
-    var res = float64(argv[0]);
+    var res = function_variable_float64(argv[0]);
     var* it = &res;
     for (int i = 1; i < argc; i++) {
-        it->next = function_new_pointer(float64(argv[i]));
+        it->next = function_new_pointer(function_variable_float64(argv[i]));
         it = &it->next->variable;
     }
     
@@ -253,7 +253,7 @@ void function_console_log(var msg)
 var* it = &res; \
 while (a.next != NULL) { \
     double a##_val = a.next->variable.value.doubleValue; \
-    it->next = function_new_pointer(float64(do)); \
+    it->next = function_new_pointer(function_variable_float64(do)); \
     \
     it = &it->next->variable; \
     a = a.next->variable; \
@@ -264,7 +264,7 @@ var* it = &res; \
 double a##_val = a.value.doubleValue; \
 while (b.next != NULL) { \
     double b##_val = b.next->variable.value.doubleValue; \
-    it->next = function_new_pointer(float64(do)); \
+    it->next = function_new_pointer(function_variable_float64(do)); \
     \
     it = &it->next->variable; \
     b = b.next->variable; \
@@ -275,7 +275,7 @@ var* it = &res; \
 while (a.next != NULL && b.next != NULL) { \
     double a_val = a.next->variable.value.doubleValue; \
     double b_val = b.next->variable.value.doubleValue; \
-    it->next = function_new_pointer(float64(do)); \
+    it->next = function_new_pointer(function_variable_float64(do)); \
     \
     it = &it->next->variable; \
     a = a.next->variable; \
@@ -305,13 +305,13 @@ var function_math_sum(var a) {
         it = &it->next->variable;
     }
     
-    return float64(sum);
+    return function_variable_float64(sum);
 }
 
 var function_math_sqr(var a) {
     CHECK_TYPE(a, TYPE_DOUBLE);
     
-    var res = float64(a.value.doubleValue * a.value.doubleValue);
+    var res = function_variable_float64(a.value.doubleValue * a.value.doubleValue);
     LOOP_LIST(a, a_val * a_val);
     
     return res;
@@ -320,7 +320,7 @@ var function_math_sqr(var a) {
 var function_math_sqrt(var a) {
     CHECK_TYPE(a, TYPE_DOUBLE);
     
-    var res = float64(sqrt(a.value.doubleValue));
+    var res = function_variable_float64(sqrt(a.value.doubleValue));
     LOOP_LIST(a, sqrt(a_val));
     
     return res;
@@ -329,7 +329,7 @@ var function_math_sqrt(var a) {
 var function_math_log(var a) {
     CHECK_TYPE(a, TYPE_DOUBLE);
     
-    var res = float64(log(a.value.doubleValue));
+    var res = function_variable_float64(log(a.value.doubleValue));
     LOOP_LIST(a, log(a_val));
     
     return res;
@@ -338,7 +338,7 @@ var function_math_log(var a) {
 var function_math_exp(var a) {
     CHECK_TYPE(a, TYPE_DOUBLE);
     
-    var res = float64(exp(a.value.doubleValue));
+    var res = function_variable_float64(exp(a.value.doubleValue));
     LOOP_LIST(a, exp(a_val));
     
     return res;
@@ -347,7 +347,7 @@ var function_math_exp(var a) {
 var function_math_atan(var a) {
     CHECK_TYPE(a, TYPE_DOUBLE);
     
-    var res = float64(atan(a.value.doubleValue));
+    var res = function_variable_float64(atan(a.value.doubleValue));
     LOOP_LIST(a, atan(a_val));
     
     return res;
@@ -356,7 +356,7 @@ var function_math_atan(var a) {
 var function_math_tan(var a) {
     CHECK_TYPE(a, TYPE_DOUBLE);
     
-    var res = float64(tan(a.value.doubleValue));
+    var res = function_variable_float64(tan(a.value.doubleValue));
     LOOP_LIST(a, tan(a_val));
     
     return res;
@@ -365,7 +365,7 @@ var function_math_tan(var a) {
 var function_math_cos(var a) {
     CHECK_TYPE(a, TYPE_DOUBLE);
     
-    var res = float64(cos(a.value.doubleValue));
+    var res = function_variable_float64(cos(a.value.doubleValue));
     LOOP_LIST(a, cos(a_val));
     
     return res;
@@ -374,7 +374,7 @@ var function_math_cos(var a) {
 var function_math_sin(var a) {
     CHECK_TYPE(a, TYPE_DOUBLE);
     
-    var res = float64(sin(a.value.doubleValue));
+    var res = function_variable_float64(sin(a.value.doubleValue));
     LOOP_LIST(a, sin(a_val));
     
     return res;
@@ -383,7 +383,7 @@ var function_math_sin(var a) {
 var function_math_atan2(var a, var b) {
     CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
-    var res = float64(atan2(a.value.doubleValue, b.value.doubleValue));
+    var res = function_variable_float64(atan2(a.value.doubleValue, b.value.doubleValue));
     if (a.next == NULL) {
         LOOP_SCALAR_LIST(a, b, atan2(a_val, b_val));
     } else if (b.next == NULL) {
@@ -398,7 +398,7 @@ var function_math_atan2(var a, var b) {
 var function_math_sub(var a, var b) {
     CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
-    var res = float64(a.value.doubleValue - b.value.doubleValue);
+    var res = function_variable_float64(a.value.doubleValue - b.value.doubleValue);
     if (a.next == NULL) {
         LOOP_SCALAR_LIST(a, b, a_val - b_val);
     } else if (b.next == NULL) {
@@ -413,7 +413,7 @@ var function_math_sub(var a, var b) {
 var function_math_mod(var a, var b) {
     CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
-    var res = float64(fmod(a.value.doubleValue, b.value.doubleValue));
+    var res = function_variable_float64(fmod(a.value.doubleValue, b.value.doubleValue));
     if (a.next == NULL) {
         LOOP_SCALAR_LIST(a, b, fmod(a_val, b_val));
     } else if (b.next == NULL) {
@@ -428,7 +428,7 @@ var function_math_mod(var a, var b) {
 var function_math_div(var a, var b) {
     CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
-    var res = float64(a.value.doubleValue / b.value.doubleValue);
+    var res = function_variable_float64(a.value.doubleValue / b.value.doubleValue);
     if (a.next == NULL) {
         LOOP_SCALAR_LIST(a, b, a_val / b_val);
     } else if (b.next == NULL) {
@@ -443,7 +443,7 @@ var function_math_div(var a, var b) {
 var function_math_pow(var a, var b) {
     CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
-    var res = float64(pow(a.value.doubleValue, b.value.doubleValue));
+    var res = function_variable_float64(pow(a.value.doubleValue, b.value.doubleValue));
     if (a.next == NULL) {
         LOOP_SCALAR_LIST(a, b, pow(a_val, b_val));
     } else if (b.next == NULL) {
@@ -458,7 +458,7 @@ var function_math_pow(var a, var b) {
 var function_math_mul(var a, var b) {
     CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
-    var res = float64(a.value.doubleValue * b.value.doubleValue);
+    var res = function_variable_float64(a.value.doubleValue * b.value.doubleValue);
     if (a.next == NULL) {
         LOOP_SCALAR_LIST(a, b, a_val * b_val);
     } else if (b.next == NULL) {
@@ -476,7 +476,7 @@ a < b ? -1 : a > b ? 1 : 0
 var function_math_cmp(var a, var b) {
     CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
-    var res = float64(COMPARE(a.value.doubleValue, b.value.doubleValue));
+    var res = function_variable_float64(COMPARE(a.value.doubleValue, b.value.doubleValue));
     if (a.next == NULL) {
         LOOP_SCALAR_LIST(a, b, COMPARE(a_val, b_val));
     } else if (b.next == NULL) {
@@ -491,7 +491,7 @@ var function_math_cmp(var a, var b) {
 var function_math_add(var a, var b) {
     CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
-    var res = float64(a.value.doubleValue + b.value.doubleValue);
+    var res = function_variable_float64(a.value.doubleValue + b.value.doubleValue);
     if (a.next == NULL) {
         LOOP_SCALAR_LIST(a, b, a_val + b_val);
     } else if (b.next == NULL) {
@@ -505,12 +505,12 @@ var function_math_add(var a, var b) {
 
 var function_set_except(var a, var b) {
     if (a.type == TYPE_NULL) {
-        return null();
+        return function_variable_null();
     }
     
     var* itA = &a;
     var* itB = &b;
-    var res = null();
+    var res = function_variable_null();
     var* it = &res;
     while (itA != NULL) {
         int aVal = itA == NULL ? 2147483647 : itA->value.intValue;
@@ -527,7 +527,7 @@ var function_set_except(var a, var b) {
         }
         
         if (isMinA && !isMinB) {
-            it->next = function_new_pointer(int32(min));
+            it->next = function_new_pointer(function_variable_int32(min));
             it = &it->next->variable;
         }
     }
@@ -549,7 +549,7 @@ var function_set_or(var a, var b) {
     
     var* itA = &a;
     var* itB = &b;
-    var res = null();
+    var res = function_variable_null();
     var* it = &res;
     while (itA != NULL || itB != NULL) {
         int aVal = itA == NULL ? 2147483647 : itA->value.intValue;
@@ -565,7 +565,7 @@ var function_set_or(var a, var b) {
             itB = itB->next == NULL ? NULL : &itB->next->variable;
         }
         
-        it->next = function_new_pointer(int32(min));
+        it->next = function_new_pointer(function_variable_int32(min));
         it = &it->next->variable;
     }
     
@@ -578,13 +578,13 @@ var function_set_or(var a, var b) {
 
 var function_set_and(var a, var b) {
     if (a.type == TYPE_NULL || b.type == TYPE_NULL) {
-        return null();
+        return function_variable_null();
     }
     CHECK_TYPE_BINARY(a, b, TYPE_INT);
     
     var* itA = &a;
     var* itB = &b;
-    var res = null();
+    var res = function_variable_null();
     var* it = &res;
     while (itA != NULL && itB != NULL) {
         int min = itA->value.intValue < itB->value.intValue ?
@@ -601,7 +601,7 @@ var function_set_and(var a, var b) {
         }
         
         if (isMinA && isMinB) {
-            it->next = function_new_pointer(int32(min));
+            it->next = function_new_pointer(function_variable_int32(min));
             it = &it->next->variable;
         }
     }
@@ -650,14 +650,14 @@ var function_file_subRead(FILE* f) {
     int32_t len;
     fread(&len, sizeof(int32_t), 1, f);
     
-    var res = null();
+    var res = function_variable_null();
     var* it = &res;
     switch (type) {
         case TYPE_INT:
             for (int i = 0; i < len; i++) {
                 int32_t val;
                 fread(&val, sizeof(int32_t), 1, f);
-                it->next = function_new_pointer(int32(val));
+                it->next = function_new_pointer(function_variable_int32(val));
                 it = &it->next->variable;
             }
             break;
@@ -665,7 +665,7 @@ var function_file_subRead(FILE* f) {
             for (int i = 0; i < len; i++) {
                 double val;
                 fread(&val, sizeof(double), 1, f);
-                it->next = function_new_pointer(float64(val));
+                it->next = function_new_pointer(function_variable_float64(val));
                 it = &it->next->variable;
             }
             break;
@@ -673,7 +673,7 @@ var function_file_subRead(FILE* f) {
             for (int i = 0; i < len; i++) {
                 char val;
                 fread(&val, sizeof(char), 1, f);
-                it->next = function_new_pointer(char8(val));
+                it->next = function_new_pointer(function_variable_char8(val));
                 it = &it->next->variable;
             }
             break;
@@ -765,20 +765,20 @@ void function_file_save(var file, var data) {
 
 void var_init(void) {
     variable = (struct variable_class){
-        .Function = function,
-        .BinaryFunction = binaryFunction,
+        .Function = function_variable_function,
+        .BinaryFunction = function_variable_binaryFunction,
         .Call = function_variable_call,
         .CallBinary = function_variable_callBinary,
-        .Float64 = float64,
-        .Float64List = float64List,
-        .Int32 = int32,
-        .Int32List = int32List,
-        .Char8 = char8,
-        .String = string,
-        .Null = null,
-        .Pointer = pointer,
-        .PointerList = pointerList,
-        .KeyValue = keyValue,
+        .Float64 = function_variable_float64,
+        .Float64List = function_variable_float64List,
+        .Int32 = function_variable_int32,
+        .Int32List = function_variable_int32List,
+        .Char8 = function_variable_char8,
+        .String = function_variable_string,
+        .Null = function_variable_null,
+        .Pointer = function_variable_pointer,
+        .PointerList = function_variable_pointerList,
+        .KeyValue = function_variable_keyValue,
     };
     stack = (struct stack_class){
         .Push = function_stack_push,

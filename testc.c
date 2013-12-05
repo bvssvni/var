@@ -1,6 +1,6 @@
 #if 0
 #!/bin/bash
-gcc -o testc testc.c var.c -Wall
+gcc -o testc testc.c var.c -Wall -O3
 if [ "$?" = "0" ]; then
     time ./testc
 fi
@@ -14,9 +14,11 @@ exit
 #ifdef EXAMPLE_26
 int main(int argc, char* argv[]) {
     var_init();
-    var age = variable.KeyValue(variable.String("Age"), variable.Int32(29));
-    console.Log(age);
-    gc.Collect(variable.Null());
+    for (int i = 0; i < 1000000; i++) {
+        var age = variable.KeyValue(variable.String("Age"), variable.Int32(29));
+        // console.Log(age);
+        gc.Collect(variable.Null());
+    }
 }
 #endif
 
