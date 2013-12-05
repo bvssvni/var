@@ -488,6 +488,43 @@ var function_math_add(var a, var b) {
     return res;
 }
 
+var function_set_or(var a, var b) {
+    if (a.type == TYPE_NULL) {
+        return b;
+    }
+    if (b.type == TYPE_NULL) {
+        return a;
+    }
+    
+    var* itA = &a;
+    var* itB = &b;
+    var res = null();
+    var* it = &res;
+    while (itA != NULL || itB != NULL) {
+        int aVal = itA == NULL ? 2147483647 : itA->value.intValue;
+        int bVal = itB == NULL ? 2147483647 : itB->value.intValue;
+        int min = aVal < bVal ? aVal : bVal;
+        int isMinA = min == aVal;
+        int isMinB = min == bVal;
+        
+        if (isMinA) {
+            itA = itA->next == NULL ? NULL : &itA->next->variable;
+        }
+        if (isMinB) {
+            itB = itB->next == NULL ? NULL : &itB->next->variable;
+        }
+        
+        it->next = function_new_pointer(int32(min));
+        it = &it->next->variable;
+    }
+    
+    if (res.next == NULL) {
+        return res;
+    } else {
+        return res.next->variable;
+    }
+}
+
 var function_set_and(var a, var b) {
     if (a.type == TYPE_NULL || b.type == TYPE_NULL) {
         return null();
@@ -527,64 +564,66 @@ var function_set_and(var a, var b) {
 
 void var_init(void) {
     variable = (struct variable_class){
-        .function = function,
-        .binaryFunction = binaryFunction,
-        .call = function_variable_call,
-        .callBinary = function_variable_callBinary,
-        .float64 = float64,
-        .float64List = float64List,
-        .int32 = int32,
-        .int32List = int32List,
-        .char8 = char8,
-        .string = string,
-        .null = null
+        .Function = function,
+        .BinaryFunction = binaryFunction,
+        .Call = function_variable_call,
+        .CallBinary = function_variable_callBinary,
+        .Float64 = float64,
+        .Float64List = float64List,
+        .Int32 = int32,
+        .Int32List = int32List,
+        .Char8 = char8,
+        .String = string,
+        .Null = null
     };
     stack = (struct stack_class){
-        .push = function_stack_push,
-        .pop = function_stack_pop
+        .Push = function_stack_push,
+        .Pop = function_stack_pop
     };
     console = (struct console_class){
-        .log = function_console_log
+        .Log = function_console_log
     };
     gc = (struct gc_class){
-        .collect = function_gc_collect
+        .Collect = function_gc_collect
     };
     set = (struct set_class){
-        .and = function_set_and,
-        .intersect = function_set_and,
+        .And = function_set_and,
+        .Intersect = function_set_and,
+        .Or = function_set_or,
+        .Union = function_set_or,
     };
     math = (struct math_class){
-        .add = function_math_add,
-        .mul = function_math_mul,
-        .multiply = function_math_mul,
-        .div = function_math_div,
-        .divide = function_math_div,
-        .sub = function_math_sub,
-        .subtract = function_math_sub,
-        .sin = function_math_sin,
-        .sine = function_math_sin,
-        .cos = function_math_cos,
-        .cosine = function_math_cos,
-        .sum = function_math_sum,
-        .tan = function_math_tan,
-        .tangent = function_math_tan,
-        .atan = function_math_atan,
-        .arctangent = function_math_atan,
-        .atan2 = function_math_atan2,
-        .arctangent2 = function_math_atan2,
-        .sqrt = function_math_sqrt,
-        .squareRoot = function_math_sqrt,
-        .square = function_math_sqr,
-        .mod = function_math_mod,
-        .modulus = function_math_mod,
-        .pow = function_math_pow,
-        .power = function_math_pow,
-        .exp = function_math_exp,
-        .exponent = function_math_exp,
-        .log = function_math_log,
-        .logarithm = function_math_log,
-        .cmp = function_math_cmp,
-        .compare = function_math_cmp,
+        .Add = function_math_add,
+        .Mul = function_math_mul,
+        .Multiply = function_math_mul,
+        .Div = function_math_div,
+        .Divide = function_math_div,
+        .Sub = function_math_sub,
+        .Subtract = function_math_sub,
+        .Sin = function_math_sin,
+        .Sine = function_math_sin,
+        .Cos = function_math_cos,
+        .Cosine = function_math_cos,
+        .Sum = function_math_sum,
+        .Tan = function_math_tan,
+        .Tangent = function_math_tan,
+        .Atan = function_math_atan,
+        .Arctangent = function_math_atan,
+        .Atan2 = function_math_atan2,
+        .Arctangent2 = function_math_atan2,
+        .Sqrt = function_math_sqrt,
+        .SquareRoot = function_math_sqrt,
+        .Square = function_math_sqr,
+        .Mod = function_math_mod,
+        .Modulus = function_math_mod,
+        .Pow = function_math_pow,
+        .Power = function_math_pow,
+        .Exp = function_math_exp,
+        .Exponent = function_math_exp,
+        .Log = function_math_log,
+        .Logarithm = function_math_log,
+        .Cmp = function_math_cmp,
+        .Compare = function_math_cmp,
     };
 }
 
