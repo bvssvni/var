@@ -267,32 +267,20 @@ while (a.next != NULL && b.next != NULL) { \
     b = b.next->variable; \
 }
 
-#define CHECK_DOUBLE_TYPE_BINARY(a, b) \
-if (a.type != TYPE_DOUBLE || b.type != TYPE_DOUBLE) { \
-    printf("ERR (%s): Variables need to be of type double\r\n", __FUNCTION__); \
-    exit(1); \
-}
-
 #define CHECK_TYPE_BINARY(a, b, t) \
 if (a.type != t || b.type != t) { \
-    printf("ERR (%s): Variables need to be of type %s\r\n", __FUNCTION__, #t); \
-    exit(1); \
-}
-
-#define CHECK_DOUBLE_TYPE(a) \
-if (a.type != TYPE_DOUBLE) { \
-    printf("ERR (%s): Variables need to be of type double\r\n", __FUNCTION__); \
+    printf("ERR (%s): Variables need to be of type %s.\r\n", __FUNCTION__, #t); \
     exit(1); \
 }
 
 #define CHECK_TYPE(a, t) \
 if (a.type != t) { \
-    printf("ERR (%s): Variables need to be of type %s\r\n", __FUNCTION__, #t); \
+    printf("ERR (%s): Variables need to be of type %s.\r\n", __FUNCTION__, #t); \
     exit(1); \
 }
 
 var function_math_sum(var a) {
-    CHECK_DOUBLE_TYPE(a);
+    CHECK_TYPE(a, TYPE_DOUBLE);
     
     double sum = a.value.doubleValue;
     var* it = &a;
@@ -306,7 +294,7 @@ var function_math_sum(var a) {
 }
 
 var function_math_sqr(var a) {
-    CHECK_DOUBLE_TYPE(a);
+    CHECK_TYPE(a, TYPE_DOUBLE);
     
     var res = float64(a.value.doubleValue * a.value.doubleValue);
     LOOP_LIST(a, a_val * a_val);
@@ -315,7 +303,7 @@ var function_math_sqr(var a) {
 }
 
 var function_math_sqrt(var a) {
-    CHECK_DOUBLE_TYPE(a);
+    CHECK_TYPE(a, TYPE_DOUBLE);
     
     var res = float64(sqrt(a.value.doubleValue));
     LOOP_LIST(a, sqrt(a_val));
@@ -324,7 +312,7 @@ var function_math_sqrt(var a) {
 }
 
 var function_math_log(var a) {
-    CHECK_DOUBLE_TYPE(a);
+    CHECK_TYPE(a, TYPE_DOUBLE);
     
     var res = float64(log(a.value.doubleValue));
     LOOP_LIST(a, log(a_val));
@@ -333,7 +321,7 @@ var function_math_log(var a) {
 }
 
 var function_math_exp(var a) {
-    CHECK_DOUBLE_TYPE(a);
+    CHECK_TYPE(a, TYPE_DOUBLE);
     
     var res = float64(exp(a.value.doubleValue));
     LOOP_LIST(a, exp(a_val));
@@ -342,7 +330,7 @@ var function_math_exp(var a) {
 }
 
 var function_math_atan(var a) {
-    CHECK_DOUBLE_TYPE(a);
+    CHECK_TYPE(a, TYPE_DOUBLE);
     
     var res = float64(atan(a.value.doubleValue));
     LOOP_LIST(a, atan(a_val));
@@ -351,7 +339,7 @@ var function_math_atan(var a) {
 }
 
 var function_math_tan(var a) {
-    CHECK_DOUBLE_TYPE(a);
+    CHECK_TYPE(a, TYPE_DOUBLE);
     
     var res = float64(tan(a.value.doubleValue));
     LOOP_LIST(a, tan(a_val));
@@ -360,7 +348,7 @@ var function_math_tan(var a) {
 }
 
 var function_math_cos(var a) {
-    CHECK_DOUBLE_TYPE(a);
+    CHECK_TYPE(a, TYPE_DOUBLE);
     
     var res = float64(cos(a.value.doubleValue));
     LOOP_LIST(a, cos(a_val));
@@ -369,7 +357,7 @@ var function_math_cos(var a) {
 }
 
 var function_math_sin(var a) {
-    CHECK_DOUBLE_TYPE(a);
+    CHECK_TYPE(a, TYPE_DOUBLE);
     
     var res = float64(sin(a.value.doubleValue));
     LOOP_LIST(a, sin(a_val));
@@ -378,7 +366,7 @@ var function_math_sin(var a) {
 }
 
 var function_math_atan2(var a, var b) {
-    CHECK_DOUBLE_TYPE_BINARY(a, b);
+    CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
     var res = float64(atan2(a.value.doubleValue, b.value.doubleValue));
     if (a.next == NULL) {
@@ -393,7 +381,7 @@ var function_math_atan2(var a, var b) {
 }
 
 var function_math_sub(var a, var b) {
-    CHECK_DOUBLE_TYPE_BINARY(a, b);
+    CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
     var res = float64(a.value.doubleValue - b.value.doubleValue);
     if (a.next == NULL) {
@@ -408,7 +396,7 @@ var function_math_sub(var a, var b) {
 }
 
 var function_math_mod(var a, var b) {
-    CHECK_DOUBLE_TYPE_BINARY(a, b);
+    CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
     var res = float64(fmod(a.value.doubleValue, b.value.doubleValue));
     if (a.next == NULL) {
@@ -423,7 +411,7 @@ var function_math_mod(var a, var b) {
 }
 
 var function_math_div(var a, var b) {
-    CHECK_DOUBLE_TYPE_BINARY(a, b);
+    CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
     var res = float64(a.value.doubleValue / b.value.doubleValue);
     if (a.next == NULL) {
@@ -438,7 +426,7 @@ var function_math_div(var a, var b) {
 }
 
 var function_math_pow(var a, var b) {
-    CHECK_DOUBLE_TYPE_BINARY(a, b);
+    CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
     var res = float64(pow(a.value.doubleValue, b.value.doubleValue));
     if (a.next == NULL) {
@@ -453,7 +441,7 @@ var function_math_pow(var a, var b) {
 }
 
 var function_math_mul(var a, var b) {
-    CHECK_DOUBLE_TYPE_BINARY(a, b);
+    CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
     var res = float64(a.value.doubleValue * b.value.doubleValue);
     if (a.next == NULL) {
@@ -471,7 +459,7 @@ var function_math_mul(var a, var b) {
 a < b ? -1 : a > b ? 1 : 0
 
 var function_math_cmp(var a, var b) {
-    CHECK_DOUBLE_TYPE_BINARY(a, b);
+    CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
     var res = float64(COMPARE(a.value.doubleValue, b.value.doubleValue));
     if (a.next == NULL) {
@@ -486,7 +474,7 @@ var function_math_cmp(var a, var b) {
 }
 
 var function_math_add(var a, var b) {
-    CHECK_DOUBLE_TYPE_BINARY(a, b);
+    CHECK_TYPE_BINARY(a, b, TYPE_DOUBLE);
     
     var res = float64(a.value.doubleValue + b.value.doubleValue);
     if (a.next == NULL) {

@@ -9,7 +9,19 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_15
+#define EXAMPLE_16
+
+#ifdef EXAMPLE_16
+// Should print out error message that the variables need to be of same type.
+int main(int argc, char* argv[]) {
+    var_init();
+    var a = variable.int32List(3, (int[]){1, 2, 3});
+    var b = variable.float64(2);
+    var c = set.intersect(a, b);
+    console.log(c);
+    gc.collect(variable.null());
+}
+#endif
 
 #ifdef EXAMPLE_15
 int main(int argc, char* argv[]) {
