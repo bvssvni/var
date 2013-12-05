@@ -9,9 +9,46 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_19
+#define EXAMPLE_23
+
+#ifdef EXAMPLE_23
+int main(int argc, char* argv[]) {
+    var_init();
+    var a = variable.String("Hello");
+    file.Save(variable.String("test.txt"), a);
+    gc.Collect(variable.Null());
+}
+#endif
+
+#ifdef EXAMPLE_22
+int main(int argc, char* argv[]) {
+    var_init();
+    var a = variable.Float64List(4, (double[]){1, 2, 3, 4});
+    file.Save(variable.String("test.txt"), a);
+    gc.Collect(variable.Null());
+}
+#endif
+
+#ifdef EXAMPLE_21
+int main(int argc, char* argv[]) {
+    var_init();
+    var a = variable.Float64(2);
+    file.Save(variable.String("test.txt"), a);
+    gc.Collect(variable.Null());
+}
+#endif
+
+#ifdef EXAMPLE_20
+int main(int argc, char* argv[]) {
+    var_init();
+    var a = variable.Int32(2);
+    file.Save(variable.String("test.txt"), a);
+    gc.Collect(variable.Null());
+}
+#endif
 
 #ifdef EXAMPLE_19
+// Prints Hello twice, one with var and another with c string.
 int main(int argc, char* argv[]) {
     var_init();
     var a = variable.String("Hello!");

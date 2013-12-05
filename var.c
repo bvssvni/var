@@ -628,6 +628,56 @@ char *function_convert_stringToCString(var a) {
     return str;
 }
 
+void function_file_subWrite(FILE* f, var data) {
+    var* it = &data;
+    // TODO: Should use sizeof(int) or sizeof(int32_t)?
+    fwrite(&data.type, sizeof(int), 1, f);
+    switch (data.type) {
+        case TYPE_INT:
+            while (it != NULL) {
+                // TODO: Should use sizeof(int) or sizeof(int32_t)?
+                fwrite(&it->value.intValue, sizeof(int), 1, f);
+                
+                it = it->next == NULL ? NULL : &it->next->variable;
+            }
+            break;
+        case TYPE_DOUBLE:
+            while (it != NULL) {
+                fwrite(&it->value.doubleValue, sizeof(double), 1, f);
+                
+                it = it->next == NULL ? NULL : &it->next->variable;
+            }
+            break;
+        case TYPE_CHAR:
+            while (it != NULL) {
+                fwrite(&it->value.charValue, sizeof(char), 1, f);
+                
+                it = it->next == NULL ? NULL : &it->next->variable;
+            }
+            break;
+        case TYPE_POINTER:
+            while (it != NULL) {
+                function_file_subWrite(f, it->value.pointerValue->variable);
+                
+                it = it->next == NULL ? NULL : &it->next->variable;
+            }
+            break;
+        default:
+            printf("ERR (%s): Unsupported type %i\r\n", __FUNCTION__, data.type);
+            exit(1);
+            break;
+    }
+}
+
+void function_file_save(var file, var data) {
+    char* fileStr = function_convert_stringToCString(file);
+    FILE* f = fopen(fileStr, "w");
+    function_file_subWrite(f, data);
+    
+    if (f != NULL) {fclose(f);}
+    if (fileStr != NULL) {free(fileStr);}
+}
+
 void var_init(void) {
     variable = (struct variable_class){
         .Function = function,
@@ -648,6 +698,9 @@ void var_init(void) {
     };
     console = (struct console_class){
         .Log = function_console_log
+    };
+    file = (struct file_class){
+        .Save = function_file_save,
     };
     gc = (struct gc_class){
         .Collect = function_gc_collect

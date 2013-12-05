@@ -60,6 +60,9 @@ struct convert_class {
 struct console_class {
     void (*Log)(var msg);
 } console;
+struct file_class {
+    void (*Save)(var file, var data);
+} file;
 struct gc_class {
     void (*Collect)(var root);
 } gc;
