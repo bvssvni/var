@@ -9,7 +9,16 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_26
+#define EXAMPLE_27
+
+#ifdef EXAMPLE_27
+int main(int argc, char* argv[]) {
+    var_init();
+    var input = console.ReadLine();
+    console.Log(input);
+    gc.Collect(variable.Null());
+}
+#endif
 
 #ifdef EXAMPLE_26
 int main(int argc, char* argv[]) {

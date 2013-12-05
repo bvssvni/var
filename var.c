@@ -224,6 +224,28 @@ int function_variable_compare(var a, var b) {
     return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
 }
 
+var function_console_readLine(void)
+{
+    var res = function_variable_null();
+    var* it = &res;
+    int ch;
+    while (1) {
+        ch = fgetc(stdin);
+        if (ch == '\r' || ch == '\n') {
+            break;
+        }
+        
+        it->next = function_new_pointer(function_variable_char8(ch));
+        it = &it->next->variable;
+    }
+    
+    if (res.next == NULL) {
+        return res;
+    } else {
+        return res.next->variable;
+    }
+}
+
 void function_console_log(var msg)
 {
     var* it = &msg;
@@ -808,7 +830,8 @@ void var_init(void) {
         .Pop = function_stack_pop
     };
     console = (struct console_class){
-        .Log = function_console_log
+        .Log = function_console_log,
+        .ReadLine = function_console_readLine,
     };
     file = (struct file_class){
         .Save = function_file_save,
