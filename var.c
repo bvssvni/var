@@ -456,6 +456,24 @@ var function_math_mul(var a, var b) {
     return res;
 }
 
+#define COMPARE(a, b) \
+a < b ? -1 : a > b ? 1 : 0
+
+var function_math_cmp(var a, var b) {
+    CHECK_DOUBLE_TYPE_BINARY(a, b);
+    
+    var res = float64(COMPARE(a.value.doubleValue, b.value.doubleValue));
+    if (a.next == NULL) {
+        LOOP_SCALAR_LIST(a, b, COMPARE(a_val, b_val));
+    } else if (b.next == NULL) {
+        LOOP_SCALAR_LIST(b, a, COMPARE(b_val, a_val));
+    } else {
+        LOOP_LIST_LIST(a, b, COMPARE(a_val, b_val));
+    }
+    
+    return res;
+}
+
 var function_math_add(var a, var b) {
     CHECK_DOUBLE_TYPE_BINARY(a, b);
     
@@ -525,6 +543,8 @@ void var_init(void) {
         .exponent = function_math_exp,
         .log = function_math_log,
         .logarithm = function_math_log,
+        .cmp = function_math_cmp,
+        .compare = function_math_cmp,
     };
 }
 

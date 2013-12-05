@@ -82,6 +82,8 @@ struct math_class {
     var (*exponent)(var a);
     var (*log)(var a);
     var (*logarithm)(var a);
+    var (*cmp)(var a, var b);
+    var (*compare)(var a, var b);
 } math;
 
 void var_init(void);

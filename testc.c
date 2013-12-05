@@ -9,7 +9,18 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_13
+#define EXAMPLE_14
+
+#ifdef EXAMPLE_14
+int main(int argc, char* argv[]) {
+    var_init();
+    var a = variable.float64(3);
+    var b = variable.float64(2);
+    var c = math.cmp(a, b);
+    console.log(c);
+    gc.collect(variable.null());
+}
+#endif
 
 #ifdef EXAMPLE_13
 int main(int argc, char* argv[]) {
