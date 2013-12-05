@@ -44,6 +44,7 @@ struct variable_class {
     var (*Pointer)(var a);
     var (*PointerList)(int argc, var argv[]);
     var (*KeyValue)(var key, var value);
+    int (*Compare)(var a, var b);
 } variable;
 struct stack_class {
     void (*Push)(var *a, var b);
@@ -59,6 +60,7 @@ struct set_class {
 } set;
 struct convert_class {
     char* (*StringToCString)(var a);
+    double (*VarToDouble)(var a);
 } convert;
 struct console_class {
     void (*Log)(var msg);

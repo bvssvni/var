@@ -202,6 +202,28 @@ var function_variable_float64List(int argc, double argv[]) {
     return res;
 }
 
+double function_convert_varToDouble(var a) {
+    switch (a.type) {
+        case TYPE_INT:
+            return a.value.intValue;
+        case TYPE_DOUBLE:
+            return a.value.doubleValue;
+        case TYPE_CHAR:
+            return a.value.charValue;
+        default:
+            printf("ERR (%s): Variable is not convertible to double %i.\r\n",
+                   __FUNCTION__, a.type);
+            exit(1);
+            return 0;
+    }
+}
+
+int function_variable_compare(var a, var b) {
+    double aVal = function_convert_varToDouble(a);
+    double bVal = function_convert_varToDouble(b);
+    return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+}
+
 void function_console_log(var msg)
 {
     var* it = &msg;
@@ -779,6 +801,7 @@ void var_init(void) {
         .Pointer = function_variable_pointer,
         .PointerList = function_variable_pointerList,
         .KeyValue = function_variable_keyValue,
+        .Compare = function_variable_compare,
     };
     stack = (struct stack_class){
         .Push = function_stack_push,
@@ -806,6 +829,7 @@ void var_init(void) {
     };
     convert = (struct convert_class) {
         .StringToCString = function_convert_stringToCString,
+        .VarToDouble = function_convert_varToDouble,
     };
     math = (struct math_class){
         .Add = function_math_add,
