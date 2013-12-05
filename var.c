@@ -111,6 +111,10 @@ struct var pointerList(int argc, var argv[]) {
     return res.next->variable;
 }
 
+struct var keyValue(var key, var value) {
+    return pointerList(2, (var[]){key, value});
+}
+
 struct var function(var (*f)(var args)) {
     return (struct var){.type = TYPE_FUNCTION,
         .value = {.functionValue = f}};
@@ -774,6 +778,7 @@ void var_init(void) {
         .Null = null,
         .Pointer = pointer,
         .PointerList = pointerList,
+        .KeyValue = keyValue,
     };
     stack = (struct stack_class){
         .Push = function_stack_push,
