@@ -75,6 +75,7 @@ struct file_class {
 } file;
 struct gc_class {
     void (*Collect)(var root);
+    void (*CollectAll)(void);
 } gc;
 struct math_class {
     var (*Add)(var a, var b);

@@ -63,6 +63,11 @@ void function_gc_collect(var root) {
     function_gc_sweep();
 }
 
+void function_gc_collectAll(void) {
+    s_marking = !s_marking;
+    function_gc_sweep();
+}
+
 void function_stack_push(var* a, var b) {
     if (a->type != b.type) {
         printf("ERR (%s): Item not of same type\r\n", __FUNCTION__);
@@ -846,7 +851,8 @@ void var_init(void) {
         .Read = function_file_load,
     };
     gc = (struct gc_class){
-        .Collect = function_gc_collect
+        .Collect = function_gc_collect,
+        .CollectAll = function_gc_collectAll,
     };
     set = (struct set_class){
         .And = function_set_and,

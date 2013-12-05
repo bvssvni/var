@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     char* txt = convert.StringToCString(str);
     printf("%s\r\n", txt);
     free(txt);
-    gc.Collect(variable.Null());
+    gc.CollectAll();
 }
 #endif
 
