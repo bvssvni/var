@@ -273,10 +273,21 @@ if (a.type != TYPE_DOUBLE || b.type != TYPE_DOUBLE) { \
     exit(1); \
 }
 
+#define CHECK_TYPE_BINARY(a, b, t) \
+if (a.type != t || b.type != t) { \
+    printf("ERR (%s): Variables need to be of type %s\r\n", __FUNCTION__, #t); \
+    exit(1); \
+}
 
 #define CHECK_DOUBLE_TYPE(a) \
 if (a.type != TYPE_DOUBLE) { \
     printf("ERR (%s): Variables need to be of type double\r\n", __FUNCTION__); \
+    exit(1); \
+}
+
+#define CHECK_TYPE(a, t) \
+if (a.type != t) { \
+    printf("ERR (%s): Variables need to be of type %s\r\n", __FUNCTION__, #t); \
     exit(1); \
 }
 
@@ -489,6 +500,43 @@ var function_math_add(var a, var b) {
     return res;
 }
 
+var function_set_and(var a, var b) {
+    if (a.type == TYPE_NULL || b.type == TYPE_NULL) {
+        return null();
+    }
+    CHECK_TYPE_BINARY(a, b, TYPE_INT);
+    
+    var* itA = &a;
+    var* itB = &b;
+    var res = null();
+    var* it = &res;
+    while (itA != NULL && itB != NULL) {
+        int min = itA->value.intValue < itB->value.intValue ?
+            itA->value.intValue : itB->value.intValue;
+        int isMinA = min == itA->value.intValue;
+        int isMinB = min == itB->value.intValue;
+        
+        
+        if (isMinA) {
+            itA = itA->next == NULL ? NULL : &itA->next->variable;
+        }
+        if (isMinB) {
+            itB = itB->next == NULL ? NULL : &itB->next->variable;
+        }
+        
+        if (isMinA && isMinB) {
+            it->next = function_new_pointer(int32(min));
+            it = &it->next->variable;
+        }
+    }
+    
+    if (res.next == NULL) {
+        return res;
+    } else {
+        return res.next->variable;
+    }
+}
+
 void var_init(void) {
     variable = (struct variable_class){
         .function = function,
@@ -512,6 +560,10 @@ void var_init(void) {
     };
     gc = (struct gc_class){
         .collect = function_gc_collect
+    };
+    set = (struct set_class){
+        .and = function_set_and,
+        .intersect = function_set_and,
     };
     math = (struct math_class){
         .add = function_math_add,

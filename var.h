@@ -46,6 +46,10 @@ struct stack_class {
     void (*push)(var *a, var b);
     var (*pop)(var *a);
 } stack;
+struct set_class {
+    var (*and)(var a, var b);
+    var (*intersect)(var a, var b);
+} set;
 struct console_class {
     void (*log)(var msg);
 } console;
