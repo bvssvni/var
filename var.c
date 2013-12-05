@@ -628,15 +628,85 @@ char *function_convert_stringToCString(var a) {
     return str;
 }
 
+var function_file_subRead(FILE* f) {
+    int32_t type;
+    fread(&type, sizeof(int32_t), 1, f);
+    
+    int32_t len;
+    fread(&len, sizeof(int32_t), 1, f);
+    
+    var res = null();
+    var* it = &res;
+    switch (type) {
+        case TYPE_INT:
+            for (int i = 0; i < len; i++) {
+                int32_t val;
+                fread(&val, sizeof(int32_t), 1, f);
+                it->next = function_new_pointer(int32(val));
+                it = &it->next->variable;
+            }
+            break;
+        case TYPE_DOUBLE:
+            for (int i = 0; i < len; i++) {
+                double val;
+                fread(&val, sizeof(double), 1, f);
+                it->next = function_new_pointer(float64(val));
+                it = &it->next->variable;
+            }
+            break;
+        case TYPE_CHAR:
+            for (int i = 0; i < len; i++) {
+                char val;
+                fread(&val, sizeof(char), 1, f);
+                it->next = function_new_pointer(char8(val));
+                it = &it->next->variable;
+            }
+            break;
+        case TYPE_POINTER:
+            for (int i = 0; i < len; i++) {
+                var val = function_file_subRead(f);
+                it->next = function_new_pointer(val);
+                
+                it = &it->next->variable;
+            }
+            break;
+        default:
+            printf("Err (%s): Unknown type %i\r\n", __FUNCTION__, type);
+    }
+    
+    return res.next->variable;
+}
+
+var function_file_load(var file) {
+    char* fileStr = function_convert_stringToCString(file);
+    FILE* f = fopen(fileStr, "r");
+    
+    var res = function_file_subRead(f);
+    
+    if (f != NULL) {fclose(f);}
+    if (fileStr != NULL) {free(fileStr);}
+    
+    return res;
+}
+
 void function_file_subWrite(FILE* f, var data) {
     var* it = &data;
-    // TODO: Should use sizeof(int) or sizeof(int32_t)?
-    fwrite(&data.type, sizeof(int), 1, f);
+    fwrite(&data.type, sizeof(int32_t), 1, f);
+    
+    int len = 0;
+    while (it != NULL) {
+        len++;
+        
+        it = it->next == NULL ? NULL : &it->next->variable;
+    }
+    
+    fwrite(&len, sizeof(int32_t), 1, f);
+    
+    it = &data;
     switch (data.type) {
         case TYPE_INT:
             while (it != NULL) {
-                // TODO: Should use sizeof(int) or sizeof(int32_t)?
-                fwrite(&it->value.intValue, sizeof(int), 1, f);
+                fwrite(&it->value.intValue, sizeof(int32_t), 1, f);
                 
                 it = it->next == NULL ? NULL : &it->next->variable;
             }
@@ -701,6 +771,9 @@ void var_init(void) {
     };
     file = (struct file_class){
         .Save = function_file_save,
+        .Write = function_file_save,
+        .Load = function_file_load,
+        .Read = function_file_load,
     };
     gc = (struct gc_class){
         .Collect = function_gc_collect

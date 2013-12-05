@@ -62,6 +62,9 @@ struct console_class {
 } console;
 struct file_class {
     void (*Save)(var file, var data);
+    void (*Write)(var file, var data);
+    var (*Load)(var file);
+    var (*Read)(var file);
 } file;
 struct gc_class {
     void (*Collect)(var root);

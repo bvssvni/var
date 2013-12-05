@@ -9,7 +9,16 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_23
+#define EXAMPLE_24
+
+#ifdef EXAMPLE_24
+int main(int argc, char* argv[]) {
+    var_init();
+    var data = file.Load(variable.String("test.txt"));
+    console.Log(data);
+    gc.Collect(variable.Null());
+}
+#endif
 
 #ifdef EXAMPLE_23
 int main(int argc, char* argv[]) {
