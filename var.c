@@ -488,6 +488,42 @@ var function_math_add(var a, var b) {
     return res;
 }
 
+var function_set_except(var a, var b) {
+    if (a.type == TYPE_NULL) {
+        return null();
+    }
+    
+    var* itA = &a;
+    var* itB = &b;
+    var res = null();
+    var* it = &res;
+    while (itA != NULL) {
+        int aVal = itA == NULL ? 2147483647 : itA->value.intValue;
+        int bVal = itB == NULL ? 2147483647 : itB->value.intValue;
+        int min = aVal < bVal ? aVal : bVal;
+        int isMinA = min == aVal;
+        int isMinB = min == bVal;
+        
+        if (isMinA) {
+            itA = itA->next == NULL ? NULL : &itA->next->variable;
+        }
+        if (isMinB) {
+            itB = itB->next == NULL ? NULL : &itB->next->variable;
+        }
+        
+        if (isMinA && !isMinB) {
+            it->next = function_new_pointer(int32(min));
+            it = &it->next->variable;
+        }
+    }
+    
+    if (res.next == NULL) {
+        return res;
+    } else {
+        return res.next->variable;
+    }
+}
+
 var function_set_or(var a, var b) {
     if (a.type == TYPE_NULL) {
         return b;
@@ -591,6 +627,8 @@ void var_init(void) {
         .Intersect = function_set_and,
         .Or = function_set_or,
         .Union = function_set_or,
+        .Except = function_set_except,
+        .Exclude = function_set_except,
     };
     math = (struct math_class){
         .Add = function_math_add,
