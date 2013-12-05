@@ -9,7 +9,18 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_27
+#define EXAMPLE_28
+
+#ifdef EXAMPLE_28
+int main(int argc, char* argv[]) {
+    var_init();
+    var str = variable.String("Hello");
+    char* txt = convert.StringToCString(str);
+    printf("%s\r\n", txt);
+    free(txt);
+    gc.Collect(variable.Null());
+}
+#endif
 
 #ifdef EXAMPLE_27
 int main(int argc, char* argv[]) {

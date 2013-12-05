@@ -224,6 +224,22 @@ int function_variable_compare(var a, var b) {
     return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
 }
 
+int function_variable_length(var a) {
+    if (a.type == TYPE_NULL) {
+        return 0;
+    }
+    
+    var* it = &a;
+    int len = 0;
+    while (it != NULL) {
+        len++;
+        
+        it = it->next == NULL ? NULL : &it->next->variable;
+    }
+    
+    return len;
+}
+
 var function_console_readLine(void)
 {
     var res = function_variable_null();
@@ -668,13 +684,7 @@ char *function_convert_stringToCString(var a) {
     var bVar = *b;
     CHECK_TYPE(bVar, TYPE_CHAR);
     
-    int len = 0;
-    while (b != NULL) {
-        len++;
-        
-        b = b->next == NULL ? NULL : &b->next->variable;
-    }
-    
+    int len = function_variable_length(bVar);
     char* str = malloc(sizeof(char) * (len + 1));
     var *it = &a.value.pointerValue->variable;
     for (int i = 0; i < len; i++) {
@@ -752,12 +762,7 @@ void function_file_subWrite(FILE* f, var data) {
     var* it = &data;
     fwrite(&data.type, sizeof(int32_t), 1, f);
     
-    int len = 0;
-    while (it != NULL) {
-        len++;
-        
-        it = it->next == NULL ? NULL : &it->next->variable;
-    }
+    int len = function_variable_length(data);
     
     fwrite(&len, sizeof(int32_t), 1, f);
     
@@ -824,6 +829,7 @@ void var_init(void) {
         .PointerList = function_variable_pointerList,
         .KeyValue = function_variable_keyValue,
         .Compare = function_variable_compare,
+        .Length = function_variable_length,
     };
     stack = (struct stack_class){
         .Push = function_stack_push,

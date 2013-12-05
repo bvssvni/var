@@ -45,6 +45,7 @@ struct variable_class {
     var (*PointerList)(int argc, var argv[]);
     var (*KeyValue)(var key, var value);
     int (*Compare)(var a, var b);
+    int (*Length)(var a);
 } variable;
 struct stack_class {
     void (*Push)(var *a, var b);
