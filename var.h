@@ -54,6 +54,9 @@ struct set_class {
     var (*Except)(var a, var b);
     var (*Exclude)(var a, var b);
 } set;
+struct convert_class {
+    char* (*StringToCString)(var a);
+} convert;
 struct console_class {
     void (*Log)(var msg);
 } console;

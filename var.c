@@ -598,6 +598,36 @@ var function_set_and(var a, var b) {
     }
 }
 
+char *function_convert_stringToCString(var a) {
+    CHECK_TYPE(a, TYPE_POINTER);
+    
+    var* b = &a.value.pointerValue->variable;
+    if (b->type == TYPE_NULL) {
+        return NULL;
+    }
+    
+    var bVar = *b;
+    CHECK_TYPE(bVar, TYPE_CHAR);
+    
+    int len = 0;
+    while (b != NULL) {
+        len++;
+        
+        b = b->next == NULL ? NULL : &b->next->variable;
+    }
+    
+    char* str = malloc(sizeof(char) * (len + 1));
+    var *it = &a.value.pointerValue->variable;
+    for (int i = 0; i < len; i++) {
+        str[i] = it->value.charValue;
+        
+        it = &it->next->variable;
+    }
+    
+    str[len] = '\0';
+    return str;
+}
+
 void var_init(void) {
     variable = (struct variable_class){
         .Function = function,
@@ -629,6 +659,9 @@ void var_init(void) {
         .Union = function_set_or,
         .Except = function_set_except,
         .Exclude = function_set_except,
+    };
+    convert = (struct convert_class) {
+        .StringToCString = function_convert_stringToCString,
     };
     math = (struct math_class){
         .Add = function_math_add,
