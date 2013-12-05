@@ -9,7 +9,18 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_17
+#define EXAMPLE_18
+
+#ifdef EXAMPLE_18
+int main(int argc, char* argv[]) {
+    var_init();
+    var a = variable.Int32List(3, (int[]){1, 2, 3});
+    var b = variable.Int32List(3, (int[]){2, 3, 4});
+    var c = set.Except(a, b);
+    console.Log(c);
+    gc.Collect(variable.Null());
+}
+#endif
 
 #ifdef EXAMPLE_17
 int main(int argc, char* argv[]) {

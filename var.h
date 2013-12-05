@@ -51,6 +51,8 @@ struct set_class {
     var (*Intersect)(var a, var b);
     var (*Or)(var a, var b);
     var (*Union)(var a, var b);
+    var (*Except)(var a, var b);
+    var (*Exclude)(var a, var b);
 } set;
 struct console_class {
     void (*Log)(var msg);
