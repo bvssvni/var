@@ -2,7 +2,7 @@ var
 ===
 
 A toy framework.
-GPLv3 License (contact me for commercial license)
+GPLv3 License (contact me for propriatory license)
 
 ##What Is Var?
 
