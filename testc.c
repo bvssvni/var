@@ -9,7 +9,35 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_30
+#define EXAMPLE_31
+
+#ifdef EXAMPLE_31
+void stack_status(var a) {
+    Console.Log(Variable.String("Stack"));
+    Console.Log(a);
+    Console.Log(Variable.String("IsEmpty"));
+    var isEmpty = Stack.IsEmpty(a);
+    Console.Log(isEmpty);
+    Console.Log(Variable.String(""));
+}
+
+int main(int argc, char* argv[]) {
+    var_init();
+    
+    var a = Variable.Null();
+    stack_status(a);
+    
+    Console.Log(Variable.String("Pushing 1"));
+    Stack.Push(&a, Variable.Int32(1));
+    stack_status(a);
+    
+    Console.Log(Variable.String("Pop"));
+    Stack.Pop(&a);
+    stack_status(a);
+    
+    Gc.CollectAll();
+}
+#endif
 
 #ifdef EXAMPLE_30
 int main(int argc, char* argv[]) {

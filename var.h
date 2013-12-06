@@ -50,6 +50,7 @@ struct variable_class {
 struct stack_class {
     void (*Push)(var *a, var b);
     var (*Pop)(var *a);
+    var (*IsEmpty)(var a);
 } Stack;
 struct set_class {
     var (*And)(var a, var b);

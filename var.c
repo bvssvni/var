@@ -14,6 +14,8 @@ static struct var_ptr* s_last_pointer = NULL;
 static int s_marking = 0;
 
 void function_console_log(var a);
+var function_variable_int32(int a);
+var function_variable_null();
 
 struct var_ptr *function_new_pointer(var a) {
     struct var_ptr* p = malloc(sizeof(struct var_ptr));
@@ -68,7 +70,12 @@ void function_gc_collectAll(void) {
     function_gc_sweep();
 }
 
-void function_stack_push(var* a, var b) {
+void function_stack_push(var *a, var b) {
+    if (a->type == TYPE_NULL) {
+        *a = b;
+        return;
+    }
+    
     if (a->type != b.type) {
         printf("ERR (%s): Item not of same type\r\n", __FUNCTION__);
         exit(1);
@@ -80,15 +87,19 @@ void function_stack_push(var* a, var b) {
 }
 
 var function_stack_pop(var *a) {
-    if (a->next == NULL) {
+    if (a->type == TYPE_NULL) {
         printf("ERR (%s): Stack is empty\r\n", __FUNCTION__);
         exit(1);
     }
     
     var res = *a;
     res.next = NULL;
-    *a = a->next->variable;
+    *a = a->next == NULL ? function_variable_null() : a->next->variable;
     return res;
+}
+
+var function_stack_isEmpty(var a) {
+    return function_variable_int32(a.type == TYPE_NULL);
 }
 
 var function_variable_null(void) {
@@ -995,7 +1006,8 @@ void var_init(void) {
     };
     Stack = (struct stack_class){
         .Push = function_stack_push,
-        .Pop = function_stack_pop
+        .Pop = function_stack_pop,
+        .IsEmpty = function_stack_isEmpty,
     };
     Console = (struct console_class){
         .Log = function_console_log,
