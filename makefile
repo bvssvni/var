@@ -1,20 +1,14 @@
-EXE = testc
-CFLAGS = -Wall -O3
-COMPILER = gcc
+EXECUTABLE = testc
+SOURCES = var.c testc.c
 
-all: $(EXE)
+all: $(EXECUTABLE)
 
-time: $(EXE)
-	time ./$(EXE)
+time: $(EXECUTABLE)
+	time ./$(EXECUTABLE)
 
-$(EXE): testc.o var.o
-	$(COMPILER) *.o -o $(EXE)
+$(EXECUTABLE): $(SOURCES)
+	gcc $(SOURCES) -o $@ -Wall -O3
 
 clean:
-	rm *.o && rm $(EXE)
+	rm $(EXECUTABLE)
 
-var.o: var.c
-	$(COMPILER) -c var.c $(CFLAGS)
-
-testc.o: testc.c
-	$(COMPILER) -c testc.c $(CFLAGS)
