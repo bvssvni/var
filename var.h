@@ -67,6 +67,7 @@ struct convert_class {
 struct console_class {
     void (*Log)(var msg);
     var (*ReadLine)(void);
+    void (*EmptyLine)(void);
 } Console;
 struct file_class {
     void (*Save)(var file, var data);

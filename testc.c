@@ -18,7 +18,7 @@ void stack_status(var a) {
     Console.Log(Variable.String("IsEmpty"));
     var isEmpty = Stack.IsEmpty(a);
     Console.Log(isEmpty);
-    Console.Log(Variable.String(""));
+    Console.EmptyLine();
 }
 
 int main(int argc, char* argv[]) {

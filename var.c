@@ -279,6 +279,11 @@ var function_console_readLine(void)
     }
 }
 
+void function_console_emptyLine(void)
+{
+    printf("\r\n");
+}
+
 void function_console_log(var msg)
 {
     var* it = &msg;
@@ -1012,6 +1017,7 @@ void var_init(void) {
     Console = (struct console_class){
         .Log = function_console_log,
         .ReadLine = function_console_readLine,
+        .EmptyLine = function_console_emptyLine,
     };
     File = (struct file_class){
         .Save = function_file_save,
