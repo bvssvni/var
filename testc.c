@@ -9,7 +9,18 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_31
+#define EXAMPLE_32
+
+#ifdef EXAMPLE_32
+int main(int argc, char* argv[]) {
+    var_init();
+    
+    var msg = Variable.String("Hello World!");
+    Console.Log(msg);
+    
+    Gc.CollectAll();
+}
+#endif
 
 #ifdef EXAMPLE_31
 void stack_status(var a) {
