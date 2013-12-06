@@ -975,7 +975,7 @@ void function_file_save(var file, var data) {
 }
 
 void var_init(void) {
-    variable = (struct variable_class){
+    Variable = (struct variable_class){
         .Function = function_variable_function,
         .BinaryFunction = function_variable_binaryFunction,
         .Call = function_variable_call,
@@ -993,25 +993,25 @@ void var_init(void) {
         .Compare = function_variable_compare,
         .Length = function_variable_length,
     };
-    stack = (struct stack_class){
+    Stack = (struct stack_class){
         .Push = function_stack_push,
         .Pop = function_stack_pop
     };
-    console = (struct console_class){
+    Console = (struct console_class){
         .Log = function_console_log,
         .ReadLine = function_console_readLine,
     };
-    file = (struct file_class){
+    File = (struct file_class){
         .Save = function_file_save,
         .Write = function_file_save,
         .Load = function_file_load,
         .Read = function_file_load,
     };
-    gc = (struct gc_class){
+    Gc = (struct gc_class){
         .Collect = function_gc_collect,
         .CollectAll = function_gc_collectAll,
     };
-    set = (struct set_class){
+    Set = (struct set_class){
         .And = function_set_and,
         .Intersect = function_set_and,
         .Or = function_set_or,
@@ -1019,11 +1019,11 @@ void var_init(void) {
         .Except = function_set_except,
         .Exclude = function_set_except,
     };
-    convert = (struct convert_class) {
+    Convert = (struct convert_class) {
         .StringToCString = function_convert_stringToCString,
         .VarToDouble = function_convert_varToDouble,
     };
-    math = (struct math_class){
+    Math = (struct math_class){
         .Add = function_math_add,
         .Mul = function_math_mul,
         .Multiply = function_math_mul,

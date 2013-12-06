@@ -46,11 +46,11 @@ struct variable_class {
     var (*KeyValue)(var key, var value);
     var (*Compare)(var a, var b);
     var (*Length)(var a);
-} variable;
+} Variable;
 struct stack_class {
     void (*Push)(var *a, var b);
     var (*Pop)(var *a);
-} stack;
+} Stack;
 struct set_class {
     var (*And)(var a, var b);
     var (*Intersect)(var a, var b);
@@ -58,25 +58,25 @@ struct set_class {
     var (*Union)(var a, var b);
     var (*Except)(var a, var b);
     var (*Exclude)(var a, var b);
-} set;
+} Set;
 struct convert_class {
     char* (*StringToCString)(var a);
     double (*VarToDouble)(var a);
-} convert;
+} Convert;
 struct console_class {
     void (*Log)(var msg);
     var (*ReadLine)(void);
-} console;
+} Console;
 struct file_class {
     void (*Save)(var file, var data);
     void (*Write)(var file, var data);
     var (*Load)(var file);
     var (*Read)(var file);
-} file;
+} File;
 struct gc_class {
     void (*Collect)(var root);
     void (*CollectAll)(void);
-} gc;
+} Gc;
 struct math_class {
     var (*Add)(var a, var b);
     var (*Mul)(var a, var b);
@@ -109,7 +109,7 @@ struct math_class {
     var (*Logarithm)(var a);
     var (*Cmp)(var a, var b);
     var (*Compare)(var a, var b);
-} math;
+} Math;
 
 void var_init(void);
 

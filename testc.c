@@ -15,21 +15,21 @@ exit
 int main(int argc, char* argv[]) {
     var_init();
     
-    var docFile = variable.String("test.txt");
+    var docFile = Variable.String("test.txt");
     
-    var add = variable.BinaryFunction(math.Add);
-    var a = variable.Float64List(2, (double[]){1, 2});
-    var b = variable.Float64List(2, (double[]){2, 3});
-    var c = variable.CallBinary(add, a, b);
-    console.Log(c);
+    var add = Variable.BinaryFunction(Math.Add);
+    var a = Variable.Float64List(2, (double[]){1, 2});
+    var b = Variable.Float64List(2, (double[]){2, 3});
+    var c = Variable.CallBinary(add, a, b);
+    Console.Log(c);
     
-    file.Save(docFile, add);
-    var rAdd = file.Read(docFile);
+    File.Save(docFile, add);
+    var rAdd = File.Read(docFile);
     
-    var d = variable.CallBinary(rAdd, a, b);
-    console.Log(d);
+    var d = Variable.CallBinary(rAdd, a, b);
+    Console.Log(d);
     
-    gc.CollectAll();
+    Gc.CollectAll();
 }
 #endif
 
