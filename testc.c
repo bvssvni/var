@@ -9,7 +9,49 @@ exit
 
 #include "var.h"
 
-#define EXAMPLE_28
+#define EXAMPLE_30
+
+#ifdef EXAMPLE_30
+int main(int argc, char* argv[]) {
+    var_init();
+    
+    var docFile = variable.String("test.txt");
+    
+    var add = variable.BinaryFunction(math.Add);
+    var a = variable.Float64List(2, (double[]){1, 2});
+    var b = variable.Float64List(2, (double[]){2, 3});
+    var c = variable.CallBinary(add, a, b);
+    console.Log(c);
+    
+    file.Save(docFile, add);
+    var rAdd = file.Read(docFile);
+    
+    var d = variable.CallBinary(rAdd, a, b);
+    console.Log(d);
+    
+    gc.CollectAll();
+}
+#endif
+
+#ifdef EXAMPLE_29
+int main(int argc, char* argv[]) {
+    var_init();
+    
+    var docFile = variable.String("test.txt");
+    
+    var sin = variable.Function(math.Sin);
+    var a = variable.Call(sin, variable.Float64(1.5));
+    console.Log(a);
+    
+    file.Save(docFile, sin);
+    var rSin = file.Read(docFile);
+    
+    var b = variable.Call(rSin, variable.Float64(1.5));
+    console.Log(b);
+    
+    gc.CollectAll();
+}
+#endif
 
 #ifdef EXAMPLE_28
 int main(int argc, char* argv[]) {

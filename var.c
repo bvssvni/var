@@ -223,15 +223,16 @@ double function_convert_varToDouble(var a) {
     }
 }
 
-int function_variable_compare(var a, var b) {
+var function_variable_compare(var a, var b) {
     double aVal = function_convert_varToDouble(a);
     double bVal = function_convert_varToDouble(b);
-    return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+    int cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+    return function_variable_int32(cmp);
 }
 
-int function_variable_length(var a) {
+var function_variable_length(var a) {
     if (a.type == TYPE_NULL) {
-        return 0;
+        return function_variable_int32(0);
     }
     
     var* it = &a;
@@ -242,7 +243,7 @@ int function_variable_length(var a) {
         it = it->next == NULL ? NULL : &it->next->variable;
     }
     
-    return len;
+    return function_variable_int32(len);
 }
 
 var function_console_readLine(void)
@@ -373,7 +374,7 @@ var function_math_sum(var a) {
     return function_variable_float64(sum);
 }
 
-var function_math_sqr(var a) {
+var function_math_square(var a) {
     CHECK_TYPE(a, TYPE_DOUBLE);
     
     var res = function_variable_float64(a.value.doubleValue * a.value.doubleValue);
@@ -689,7 +690,7 @@ char *function_convert_stringToCString(var a) {
     var bVar = *b;
     CHECK_TYPE(bVar, TYPE_CHAR);
     
-    int len = function_variable_length(bVar);
+    int len = function_variable_length(bVar).value.intValue;
     char* str = malloc(sizeof(char) * (len + 1));
     var *it = &a.value.pointerValue->variable;
     for (int i = 0; i < len; i++) {
@@ -700,6 +701,124 @@ char *function_convert_stringToCString(var a) {
     
     str[len] = '\0';
     return str;
+}
+
+int32_t function_reflect_functionId(var (*f)(var args)) {
+    if (f == function_variable_length) {
+        return 1001;
+    } else if (f == function_variable_pointer) {
+        return 1003;
+    } else if (f == function_math_sin) {
+        return 1005;
+    } else if (f == function_math_cos) {
+        return 1007;
+    } else if (f == function_math_sum) {
+        return 1009;
+    } else if (f == function_math_tan) {
+        return 1011;
+    } else if (f == function_math_atan) {
+        return 1013;
+    } else if (f == function_math_square) {
+        return 1015;
+    } else if (f == function_math_exp) {
+        return 1017;
+    } else if (f == function_math_log) {
+        return 1019;
+    } else {
+        return -1;
+    }
+}
+
+var (*function_reflect_functionById(int32_t id))(var args) {
+    switch (id) {
+        case 1001:
+            return function_variable_length;
+        case 1003:
+            return function_variable_pointer;
+        case 1005:
+            return function_math_sin;
+        case 1007:
+            return function_math_cos;
+        case 1009:
+            return function_math_sum;
+        case 1011:
+            return function_math_tan;
+        case 1013:
+            return function_math_atan;
+        case 1015:
+            return function_math_square;
+        case 1017:
+            return function_math_exp;
+        case 1019:
+            return function_math_log;
+        default:
+            return NULL;
+    }
+}
+
+int32_t function_reflect_binaryFunctionId(var (*f)(var a, var b)) {
+    if (f == function_variable_keyValue) {
+        return 1000;
+    } else if (f == function_variable_compare) {
+        return 1002;
+    } else if (f == function_set_and) {
+        return 1004;
+    } else if (f == function_set_or) {
+        return 1006;
+    } else if (f == function_set_except) {
+        return 1008;
+    } else if (f == function_math_add) {
+        return 1010;
+    } else if (f == function_math_mul) {
+        return 1012;
+    } else if (f == function_math_pow) {
+        return 1014;
+    } else if (f == function_math_div) {
+        return 1016;
+    } else if (f == function_math_sub) {
+        return 1018;
+    } else if (f == function_math_atan2) {
+        return 1020;
+    } else if (f == function_math_mod) {
+        return 1022;
+    } else if (f == function_math_cmp) {
+        return 1024;
+    } else {
+        return -1;
+    }
+}
+
+var (*function_reflect_binaryFunctionById(int32_t id))(var a, var b) {
+    switch (id) {
+        case 1000:
+            return function_variable_keyValue;
+        case 1002:
+            return function_variable_compare;
+        case 1004:
+            return function_set_and;
+        case 1006:
+            return function_set_or;
+        case 1008:
+            return function_set_except;
+        case 1010:
+            return function_math_add;
+        case 1012:
+            return function_math_mul;
+        case 1014:
+            return function_math_pow;
+        case 1016:
+            return function_math_div;
+        case 1018:
+            return function_math_sub;
+        case 1020:
+            return function_math_atan2;
+        case 1022:
+            return function_math_mod;
+        case 1024:
+            return function_math_cmp;
+        default:
+            return NULL;
+    }
 }
 
 var function_file_subRead(FILE* f) {
@@ -744,6 +863,28 @@ var function_file_subRead(FILE* f) {
                 it = &it->next->variable;
             }
             break;
+        case TYPE_FUNCTION:
+            for (int i = 0; i < len; i++) {
+                int32_t val;
+                fread(&val, sizeof(int32_t), 1, f);
+                var func = function_variable_function
+                (function_reflect_functionById(val));
+                it->next = function_new_pointer(func);
+                
+                it = &it->next->variable;
+            }
+            break;
+        case TYPE_BINARY_FUNCTION:
+            for (int i = 0; i < len; i++) {
+                int32_t val;
+                fread(&val, sizeof(int32_t), 1, f);
+                var func = function_variable_binaryFunction
+                (function_reflect_binaryFunctionById(val));
+                it->next = function_new_pointer(func);
+                
+                it = &it->next->variable;
+            }
+            break;
         default:
             printf("Err (%s): Unknown type %i\r\n", __FUNCTION__, type);
     }
@@ -767,7 +908,7 @@ void function_file_subWrite(FILE* f, var data) {
     var* it = &data;
     fwrite(&data.type, sizeof(int32_t), 1, f);
     
-    int len = function_variable_length(data);
+    int len = function_variable_length(data).value.intValue;
     
     fwrite(&len, sizeof(int32_t), 1, f);
     
@@ -797,6 +938,22 @@ void function_file_subWrite(FILE* f, var data) {
         case TYPE_POINTER:
             while (it != NULL) {
                 function_file_subWrite(f, it->value.pointerValue->variable);
+                
+                it = it->next == NULL ? NULL : &it->next->variable;
+            }
+            break;
+        case TYPE_FUNCTION:
+            while (it != NULL) {
+                int32_t id = function_reflect_functionId(it->value.functionValue);
+                fwrite(&id, sizeof(int32_t), 1, f);
+                
+                it = it->next == NULL ? NULL : &it->next->variable;
+            }
+            break;
+        case TYPE_BINARY_FUNCTION:
+            while (it != NULL) {
+                int32_t id = function_reflect_binaryFunctionId(it->value.binaryFunctionValue);
+                fwrite(&id, sizeof(int32_t), 1, f);
                 
                 it = it->next == NULL ? NULL : &it->next->variable;
             }
@@ -887,7 +1044,7 @@ void var_init(void) {
         .Arctangent2 = function_math_atan2,
         .Sqrt = function_math_sqrt,
         .SquareRoot = function_math_sqrt,
-        .Square = function_math_sqr,
+        .Square = function_math_square,
         .Mod = function_math_mod,
         .Modulus = function_math_mod,
         .Pow = function_math_pow,
