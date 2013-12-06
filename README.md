@@ -11,8 +11,14 @@ I want an easy-to-use framework which builds directly into the executable.
 
 * Mark & Sweep garbage collector
 * All variables are lists
-* Math performs on lists of doubles.
-* Set performs on lists of ints.
+* Choose between short or clear function names
+* Variable/Var creates variable types
+* Math does mathematics on lists of doubles
+* Set does Boolean algebra on lists of ascending ints
+* Stack does stack operations on variables
+* Console prints or read to the console window
+* File load or saves data from file
+* Convert converts between data types
 
 ###Hello World Example
 
@@ -21,8 +27,10 @@ I want an easy-to-use framework which builds directly into the executable.
     int main(int argc, char* argv[]) {
         var_init(); // Sets up the framework functions.
     
+        // alternative: Var.String
         var msg = Variable.String("Hello World!");
         Console.Log(msg); // Prints 'Hello World!'
     
-        Gc.CollectAll(); // Calls the garbage collector.
+        // alternative: Gc.CollectAll
+        GarbageCollector.CollectAll();
     }
