@@ -14,7 +14,7 @@ clean:
 	rm *.o && rm $(EXE)
 
 var.o: var.c
-	$(COMPILER) -c var.c
+	$(COMPILER) -c var.c $(CFLAGS)
 
 testc.o: testc.c
-	$(COMPILER) -c testc.c
+	$(COMPILER) -c testc.c $(CFLAGS)
