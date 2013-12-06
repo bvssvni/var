@@ -1014,6 +1014,7 @@ void var_init(void) {
         .Compare = function_variable_compare,
         .Length = function_variable_length,
     };
+    Var = Variable;
     Stack = (struct stack_class){
         .Push = function_stack_push,
         .Pop = function_stack_pop,
@@ -1034,6 +1035,7 @@ void var_init(void) {
         .Collect = function_gc_collect,
         .CollectAll = function_gc_collectAll,
     };
+    GarbageCollector = Gc;
     Set = (struct set_class){
         .And = function_set_and,
         .Intersect = function_set_and,

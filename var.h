@@ -47,6 +47,7 @@ struct variable_class {
     var (*Compare)(var a, var b);
     var (*Length)(var a);
 } Variable;
+struct variable_class Var;
 struct stack_class {
     void (*Push)(var *a, var b);
     var (*Pop)(var *a);
@@ -79,6 +80,7 @@ struct gc_class {
     void (*Collect)(var root);
     void (*CollectAll)(void);
 } Gc;
+struct gc_class GarbageCollector;
 struct math_class {
     var (*Add)(var a, var b);
     var (*Mul)(var a, var b);

@@ -15,7 +15,7 @@ exit
 int main(int argc, char* argv[]) {
     var_init();
     
-    var msg = Variable.String("Hello World!");
+    var msg = Var.String("Hello World!");
     Console.Log(msg);
     
     Gc.CollectAll();
