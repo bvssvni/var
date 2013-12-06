@@ -1,7 +1,7 @@
 /*
 Github: https://github.com/bvssvni/var
 License: http://www.gnu.org/licenses/gpl-3.0.html
-Comments: Contact me for commercial license
+Comments: Contact me for propriatory license
 */
  
 #include "var.h"
